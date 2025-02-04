@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.bible.reservation.repository.IReservationRepository">
+	
+	<!-- ResultMap -->
+	<resultMap id="reservMap" type="Reservation">
+		<id property="reservId" column="reserv_id"/>
+		<result property="memId" column="mem_id"/>
+		<result property="bookId" column="book_id"/>
+		<result property="reservDate" column="reserv_date"/>
+	</resultMap>
+
+	<!-- 모든 예약 조회 -->
+	<select id="selectAllReserv" resultMap="reservMap">
+		SELECT
+			reserv_id,
+			mem_id,
+			book_id,
+			reserv_date
+		FROM reservation
+	</select>
+	
+	<!-- 특정 예약 조회 -->
+	<select id="selectReserv" resultMap="reservMap">
+		SELECT
+			reserv_id,
+			mem_id,
+			book_id,
+			reserv_date
+		FROM reservation
+		WHERE reserv_id = #{reservId}
+	</select>
+	
+	<!-- 예약 추가 -->
+	<insert id="insertReserv" parameterType="Reservation">
+		INSERT INTO reservation
+			(mem_id, book_id, reserv_date)
+		VALUES
+			(#{memId}, #{bookId}, #{reservDate})
+	</insert>
+	
+	<!-- 예약 수정 -->
+	<update id="updateReserv" parameterType="Reservation">
+		UPDATE reservation
+		SET
+			mem_id = #{memId},
+			book_id = #{bookId},
+			reserv_date = #{reservDate}
+		WHERE reserv_id = #{reservId}
+	</update>
+	
+	<!-- 예약 삭제 -->
+	<delete id="deleteReserv">
+		DELETE FROM reservation WHERE reserv_id = #{reservId}
+	</delete>
+	
+</mapper>
