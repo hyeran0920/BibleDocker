@@ -26,31 +26,23 @@ jobs:
 
       # 3. 기존 Docker 컨테이너 중지 및 삭제
       - name: Stop and remove old container
-        shell: powershell
         run: |
-          $containerName = "${{secrets.DOCKER_CONTAINER_NAME}}"
-          $existingContainer = docker ps -a --filter "name=$containerName" --format "{{.Names}}"
-          if ($existingContainer -eq $containerName) {
-            Write-Host "컨테이저 중지시킴: $containerName"
-            docker stop $containerName
-            docker rm $containerName
-          } else {
-            Write-Host "No container named $containerName found."
-          }
+          containerName="${{secrets.DOCKER_CONTAINER_NAME}}"
+          existingContainer=$(docker ps -a --filter "name=$containerName" --format "{{.Names}}")
+          if [ "$existingContainer" = "$containerName" ]; then
+            echo "Stopping container: $containerName"
+            docker stop "$containerName"
+            docker rm "$containerName"
+          else
+            echo "No container named $containerName found."
+          fi
 
       # 4. 기존 Docker 이미지 삭제
       - name: Remove old Docker image
-        shell: powershell
         run: |
-          $imageName = "${{ secrets.DOCKER_IMAGE_NAME }}"
-          try {
-            Write-Host "Attempting to remove image: $imageName"
-            docker rmi -f $imageName
-            Write-Host "Image $imageName removed successfully."
-          } catch {
-            Write-Host "Failed to remove image: $imageName"
-            Write-Host "Error: $_"
-          }
+          imageName="${{ secrets.DOCKER_IMAGE_NAME }}"
+          echo "Attempting to remove image: $imageName"
+          docker rmi -f "$imageName" || echo "Failed to remove image: $imageName"
 
       # 5. Docker 이미지 빌드
       - name: Build Docker image
