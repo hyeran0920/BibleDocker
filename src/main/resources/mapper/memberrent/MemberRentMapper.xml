@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.bible.memberrent.respository.IMemberRentRepository">
+    <!-- ResultMap 정의 -->
+	<resultMap id="memberRentResultMap" type="MemberRent">
+		<id property="memId" column="mem_id" />
+		<result property="totalRentCount" column="total_rent_count"/>
+		<result property="rentPoss" column="rent_poss"/>
+		<result property="rentPossDate" column="rent_poss_date"/>
+	</resultMap>
+
+	<!-- Member ID로 member_rent 조회 -->
+	<select id="selectMemberRentByMemId" parameterType="int" resultMap="memberRentResultMap">
+	    SELECT 
+	        mem_id,
+	        total_rent_count,
+	        rent_poss,
+	        rent_poss_date
+	    FROM member_rent
+	    WHERE mem_id = #{memId}
+	</select>
+	
+	<!-- MemberRent 등록 -->
+	<insert id="insertMemberRent" parameterType="MemberRent">
+	    INSERT INTO member_rent (
+	        mem_id,
+	        total_rent_count,
+	        rent_poss,
+	        rent_poss_date
+	    ) VALUES (
+	        #{memId},
+	        #{totalRentCount},
+	        #{rentPoss},
+	        #{rentPossDate}
+	    )
+	</insert>
+	
+	<!-- MemberRent 수정 -->
+    <update id="updateMemberRent" parameterType="MemberRent">
+        UPDATE member_rent SET
+            total_rent_count = #{totalRentCount},
+            rent_poss = #{rentPoss},
+            rent_poss_date = #{rentPossDate}
+        WHERE mem_id = #{memId}
+    </update>
+
+	<!-- MemberRent 삭제 -->
+	<delete id="deleteMemberRent" parameterType="int">
+	    DELETE FROM member_rent
+	    WHERE mem_id = #{memId}
+	</delete>
+</mapper>
